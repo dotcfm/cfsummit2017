@@ -32,7 +32,7 @@ TO BUILD
 FILES OF INTEREST
 
     Dockerfile
-    index.cfm
+    myapp\index.cfm
 
 TO RUN
 
