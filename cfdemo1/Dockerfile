@@ -11,7 +11,8 @@ COPY . /res
 RUN /res/ColdFusion_2016_WWEJ_linux64.bin -f /res/silent.properties
 
 # inject source code
-COPY index.cfm /opt/coldfusion2016/cfusion/wwwroot/index.cfm
+COPY myapp/index.cfm /opt/coldfusion2016/cfusion/wwwroot/index.cfm
+COPY myapp/docker.png /opt/coldfusion2016/cfusion/wwwroot/docker.png
 
 # expose ports for debugging, http, websockets, secure websockets
 EXPOSE 5005 8500 8577 8543
