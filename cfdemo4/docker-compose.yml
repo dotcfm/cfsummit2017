@@ -1,0 +1,46 @@
+version: "3.2"
+
+networks:
+  demo:
+
+services:
+
+  cf:
+    image: cfdemo3
+    # deploy:
+    #   replicas: 5
+    depends_on:
+      - "redis"
+    volumes:
+      - type: bind
+        source: .\www
+        target: /var/www
+        read_only: true
+    environment:
+      - TZ=America/Los_Angeles
+    networks:
+      - demo
+
+  nginx:
+    image: nginx:latest
+    restart: always
+    depends_on:
+      - "cf"
+    networks:
+      - demo
+    ports:
+      - "80:80"
+    environment:
+      - TZ=America/Los_Angeles
+    volumes:
+      - type: bind
+        source: .\nginx\nginx.conf
+        target: /etc/nginx/nginx.conf
+        read_only: false
+
+  redis:
+    image: redis:latest
+    networks:
+      - demo
+    environment:
+      - TZ=America/Los_Angeles

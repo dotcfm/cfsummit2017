@@ -1,0 +1,10 @@
+{
+  "recommendations": [
+    "ilich8086.coldfusion",
+    "trst.cfml-comment-tags",
+    "PKief.material-icon-theme",
+    "formulahendry.auto-close-tag",
+    "PeterJausovec.vscode-docker",
+    "shanoor.vscode-nginx"
+  ]
+}

@@ -1,0 +1,190 @@
+version: "3.2"
+networks:
+  demo:
+services:
+
+  cf:
+    image: cfdemo2
+    ports:
+      - "8500:8500"
+    volumes:
+
+      # source code
+
+      - type: bind
+        source: .\www
+        target: /var/www
+        read_only: true
+
+      # cf-config
+
+      - type: bind
+        source: .\cf\adminconfig.xml
+        target: /opt/coldfusion2016/cfusion/lib/adminconfig.xml
+        read_only: false
+
+      - type: bind
+        source: .\cf\jvm.config
+        target: /opt/coldfusion2016/cfusion/bin/jvm.config
+        read_only: false
+
+      - type: bind
+        source: .\cf\server.xml
+        target: /opt/coldfusion2016/cfusion/runtime/conf/server.xml
+        read_only: false
+
+      # cf neo-xml
+
+      - type: bind
+        source: .\cf\neo-archivedeploy.xml
+        target: /opt/coldfusion2016/cfusion/lib/neo-archivedeploy.xml
+        read_only: false
+
+      - type: bind
+        source: .\cf\neo-clientstore.xml
+        target: /opt/coldfusion2016/cfusion/lib/neo-clientstore.xml
+        read_only: false
+
+      - type: bind
+        source: .\cf\neo-comobjmap.xml
+        target: /opt/coldfusion2016/cfusion/lib/neo-comobjmap.xml
+        read_only: false
+
+      - type: bind
+        source: .\cf\neo-cron.xml
+        target: /opt/coldfusion2016/cfusion/lib/neo-cron.xml
+        read_only: false
+
+      - type: bind
+        source: .\cf\neo-datasource.xml
+        target: /opt/coldfusion2016/cfusion/lib/neo-datasource.xml
+        read_only: false
+
+      - type: bind
+        source: .\cf\neo-debug.xml
+        target: /opt/coldfusion2016/cfusion/lib/neo-debug.xml
+        read_only: false
+
+      - type: bind
+        source: .\cf\neo-document.xml
+        target: /opt/coldfusion2016/cfusion/lib/neo-document.xml
+        read_only: false
+
+      - type: bind
+        source: .\cf\neo-dotnet.xml
+        target: /opt/coldfusion2016/cfusion/lib/neo-dotnet.xml
+        read_only: false
+
+      - type: bind
+        source: .\cf\neo-drivers.xml
+        target: /opt/coldfusion2016/cfusion/lib/neo-drivers.xml
+        read_only: false
+
+      - type: bind
+        source: .\cf\neo-event.xml
+        target: /opt/coldfusion2016/cfusion/lib/neo-event.xml
+        read_only: false
+
+      - type: bind
+        source: .\cf\neo-graphing.xml
+        target: /opt/coldfusion2016/cfusion/lib/neo-graphing.xml
+        read_only: false
+
+      - type: bind
+        source: .\cf\neo-jaxrs.xml
+        target: /opt/coldfusion2016/cfusion/lib/neo-jaxrs.xml
+        read_only: false
+
+      - type: bind
+        source: .\cf\neo-logging.xml
+        target: /opt/coldfusion2016/cfusion/lib/neo-logging.xml
+        read_only: false
+
+      - type: bind
+        source: .\cf\neo-mail.xml
+        target: /opt/coldfusion2016/cfusion/lib/neo-mail.xml
+        read_only: false
+
+      - type: bind
+        source: .\cf\neo-metric.xml
+        target: /opt/coldfusion2016/cfusion/lib/neo-metric.xml
+        read_only: false
+
+      - type: bind
+        source: .\cf\neo-monitoring.xml
+        target: /opt/coldfusion2016/cfusion/lib/neo-monitoring.xml
+        read_only: false
+
+      - type: bind
+        source: .\cf\neo-probe.xml
+        target: /opt/coldfusion2016/cfusion/lib/neo-probe.xml
+        read_only: false
+
+      - type: bind
+        source: .\cf\neo-registry.xml
+        target: /opt/coldfusion2016/cfusion/lib/neo-registry.xml
+        read_only: false
+
+      - type: bind
+        source: .\cf\neo-runtime.xml
+        target: /opt/coldfusion2016/cfusion/lib/neo-runtime.xml
+        read_only: false
+
+      - type: bind
+        source: .\cf\neo-search.xml
+        target: /opt/coldfusion2016/cfusion/lib/neo-search.xml
+        read_only: false
+
+      - type: bind
+        source: .\cf\neo-secureprofile.xml
+        target: /opt/coldfusion2016/cfusion/lib/neo-secureprofile.xml
+        read_only: false
+
+      - type: bind
+        source: .\cf\neo-security.xml
+        target: /opt/coldfusion2016/cfusion/lib/neo-security.xml
+        read_only: false
+
+      - type: bind
+        source: .\cf\neo-solr.xml
+        target: /opt/coldfusion2016/cfusion/lib/neo-solr.xml
+        read_only: false
+
+      - type: bind
+        source: .\cf\neo-watch.xml
+        target: /opt/coldfusion2016/cfusion/lib/neo-watch.xml
+        read_only: false
+
+      - type: bind
+        source: .\cf\neo-websocket.xml
+        target: /opt/coldfusion2016/cfusion/lib/neo-websocket.xml
+        read_only: false
+
+      - type: bind
+        source: .\cf\neo-xmlrpc.xml
+        target: /opt/coldfusion2016/cfusion/lib/neo-xmlrpc.xml
+        read_only: false
+
+      - type: bind
+        source: .\cf\seed.properties
+        target: /opt/coldfusion2016/cfusion/lib/seed.properties
+        read_only: false
+
+    environment:
+      - TZ=America/Los_Angeles
+    networks:
+      - demo
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    networks:
+      - demo
+    environment:
+      - TZ=America/Los_Angeles
+    volumes:
+      - type: bind
+        source: .\nginx\nginx.conf
+        target: /etc/nginx/nginx.conf
+        read_only: true

@@ -1,0 +1,10 @@
+*.sh text eol=lf
+
+# cf will fail to start if these get translated to CRLF endings
+jvm.config text eol=lf
+nginx.conf text eol=lf
+neo-*.xml text eol=lf
+seed.properties text eol=lf
+server.xml text eol=lf
+silent.properties text eol=lf
+smb.conf text eol=lf
