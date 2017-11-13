@@ -13,16 +13,6 @@ These files are referenced by the demo code and required for building Docker ima
 - mysql-connector-java-5.1.42-bin (mysql.com)
 
 
-# Base Image
-
-A base image used by some of the examples.
-
-TO BUILD
-
-    cd cfbaseos
-    docker build -t cfbaseos .
-
-
 # Demo 1: Minimal Example
 
 A **minimal** example of building a CF Docker image.
@@ -30,9 +20,11 @@ A **minimal** example of building a CF Docker image.
 - build the image
 - run the container
 
-TO BUILD
+REQUIREMENTS
 
-The build requires the Linux x64 ColdFusion installer `ColdFusion_2016_WWEJ_linux64.bin` file to be in the `demo1` folder.
+- The build requires the Linux x64 ColdFusion installer `ColdFusion_2016_WWEJ_linux64.bin` file to be in the `demo1` folder.
+
+TO BUILD
 
     cd cfdemo1
     docker build -t cfdemo1 .
@@ -49,7 +41,7 @@ TO RUN
 Test by browsing to http://localhost:8500
 
 
-## Developer Use Case
+## Demo 1: Developer Use Case
 
 Files on the host can be bind mounted to the container using `-v c:\host\path:/container/path`.
 
@@ -57,7 +49,17 @@ RUN DEVELOPER USE CASE
 
     docker run -ti --rm -p 8500:8500 -v %cd%\myapp:/opt/coldfusion2016/cfusion/wwwroot/myapp cfdemo1
 
-Test by browsing to http://localhost:8500/myapp and modifying `myapp\index.cfm`.
+Test by browsing to http://localhost:8500/myapp and modifying files in  `myapp\`.
+
+
+# Base Image (Required for Demo 2)
+
+A base image used by some of the examples.
+
+TO BUILD
+
+    cd cfbaseos
+    docker build -t cfbaseos .
 
 
 # Demo 2: Real-World Example
@@ -75,18 +77,18 @@ A **real-world** example of building a CF Docker image including (everything but
 - use `docker-compose.yml` to declare the composition
 - use `docker-compose up` command to bring up the stack
 
+REQUIREMENTS
+
+- The following binaries are required for building and should be put in the `cfdemo2\cf-res\software` folder:
+  - `ColdFusion_2016_WWEJ_linux64.bin`
+  - `hotfix-004-302561.jar`
+  - `mysql-connector-java-5.1.42-bin`
+- The `cfbaseos` image should be built if it hasn't been already.
+
 TO BUILD
 
-The following binaries are required for building and should be put in the `cfdemo2\cf-res\software` folder:
-
-- ColdFusion_2016_WWEJ_linux64.bin
-- hotfix-004-302561.jar
-- mysql-connector-java-5.1.42-bin
-
-The `cfbaseos` image should be built if it hasn't been already.
-
     cd cfdemo2
-    docker build -t --squash cfdemo2 .
+    docker build --squash -t cfdemo2 .
 
 FILES OF INTEREST
 
@@ -116,6 +118,10 @@ Builds on Demo 2 and demonstrates:
 - have multiple CF containers
 - configure NGINX to have multiple backends
 - use docker-compose.yml to declare the composition
+
+REQUIREMENTS
+
+- `cfdemo2` image created in Demo 2
 
 TO BUILD
 
@@ -158,9 +164,13 @@ This stack will be composed of:
 - a Redis service (scale=1)
 - a ColdFusion service (scale=5)
 
+REQUIREMENTS
+
+- `cfdemo3` image created in Demo 3
+
 TO BUILD
 
-Nothing to build this time. We are going to reuse the `cfdemo3` Redis-ready image we built in Demo 3.
+- Nothing will be built for Demo 4; we are going to reuse the `cfdemo3` Redis-ready image we built in Demo 3.
 
 FILES OF INTEREST
 
