@@ -74,7 +74,7 @@ A **real-world** example of building a CF Docker image including (everything but
 - bind mount the project’s source code `www\` to `/var/www`
 - bind mount the CF configuration files `cf\` to their respective locations in the CF directory
 - add an NGINX service to the stack which will function as a reverse proxy and a static cache
-- use `docker-compose.yml` to declare the composition
+- use `docker-compose.yml` to define the composition
 - use `docker-compose up` command to bring up the stack
 
 REQUIREMENTS
@@ -93,7 +93,7 @@ TO BUILD
 FILES OF INTEREST
 
     Dockerfile
-    cf\
+    cf\ (neo-*.xml, server.xml, seed.properties, etc.)
     nginx\nginx.conf
     www\
     docker-compose.yml
@@ -105,19 +105,18 @@ TO RUN
 Test by browsing to http://localhost
 
 
-# Demo 3: Load-Balancing with NGINX and Redis
+# Demo 3: Load-balancing with Docker, NGINX, and Redis
 
-Load-balancing with NGINX and Redis.
 Builds on Demo 2 and demonstrates:
 
-- load balancing with NGINX
-- Redis for session sharing
-- use the image created in Demo 2
-- add a simple layer to the image: Redis configuration (in neo-runtime.xml)
-- add a Redis service to the composition using the official Redis image
-- have multiple CF containers
-- configure NGINX to have multiple backends
-- use docker-compose.yml to declare the composition
+- Docker's built-in load-balancer
+- builds on the image `cfdemo2` built in Demo 2
+- adds a simple layer to the CF image: Redis configuration (in neo-runtime.xml)
+- adds a Redis service (scale=1) to the composition using the official Redis image
+- configures NGINX (scale=1) to look for 3 CF backends
+  - note: the upstream backends defined in `nginx.conf` are based on the way Docker automatically names the containers on the network: `cfdemo3_cf_1`, `cfdemo3_cf_2`, etc.
+- scales CF using `docker-compose --scale`
+- uses `docker-compose.yml` to define the composition
 
 REQUIREMENTS
 
@@ -133,53 +132,21 @@ FILES OF INTEREST
     Dockerfile
     cf\
     nginx\nginx.conf
-    www\
+    www\Application.cfc (enable session mgmt)
     docker-compose.yml
 
 TO RUN
 
-    docker-compose up
+    docker-compose up --scale cf=3
 
-Test by browsing to http://localhost. Note the containers are load balanced (thanks to NGINX) and the session id remains the same (thanks to Redis).
+Test by browsing to http://localhost. Note the containers are load balanced (thanks to Docker) and the session id remains the same (thanks to Redis).
 
-AN OPTION when using NGINX for load balancing is to use sticky sessions instead of Redis. NGINX can do this by way of the upstream 'ip_hash' directive. This is a bit tricky though because the client IP is abstracted by the Docker network (NAT). See this issue here:
+A FEW NOTES ABOUT STICKY SESSIONS INSTEAD OF REDIS
+
+You can't use sticky sessions with Docker load-balancing because the back-ends are non-deterministic.
+One option is to use NGINX for load-balancing. NGINX can do this by way of the upstream 'ip_hash' directive which by default switches based on client ip. This is a bit tricky though because the client ip gets abstracted by the Docker network NAT. Read more about it here:
 
 https://github.com/docker/for-mac/issues/180
 
-You can alternatively however hash on some other client identifier other than IP address like cftoken but it takes at least an initial round trip through the load balancer for new clients to receive a cftoken so in these cases the client may not stick.
+You can alternatively hash on some other client identifier other than client ip like cftoken for example but it takes at least an initial round trip through the load balancer for new clients to receive a cftoken the first time so in these cases the session may not stick on the first request.
 
-
-# Demo 4: Docker native LB & Scaling
-
-Docker native LB & Scaling.
-
-**docker-compose.yml**
-
-- use the Redis-enabled CF image `cfdemo3` we built in Demo 3
-- note the simpler (single `cf` service declaration) in `docker-compose.yml`
-- note the upstream backends defined in `nginx.conf` are based on the way Docker automatically names the containers on the network: `cfdemo4_cf_1`, `cfdemo4_cf_2`, etc.
-
-This stack will be composed of:
-- an NGINX service (scale=1)
-- a Redis service (scale=1)
-- a ColdFusion service (scale=5)
-
-REQUIREMENTS
-
-- `cfdemo3` image created in Demo 3
-
-TO BUILD
-
-- Nothing will be built for Demo 4; we are going to reuse the `cfdemo3` Redis-ready image we built in Demo 3.
-
-FILES OF INTEREST
-
-    nginx\nginx.conf (5 backends)
-    docker-compose.yml (only one cf service defined this time)
-
-TO RUN
-
-    cd cfdemo4
-    docker-compose up --scale cf=5
-
-Test by browsing to http://localhost. Note the containers are load balanced (this time by Docker) and the session id remains the same (thanks to Redis again).

@@ -1,1 +1,1 @@
-docker-compose up
+docker-compose up --scale cf=3

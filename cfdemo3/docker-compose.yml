@@ -1,103 +1,37 @@
 version: "3.2"
+
 networks:
   demo:
+
 services:
 
-  # scale out cf
-
-  cf1:
+  cf:
     image: cfdemo3
-    ports:
-      - "8501:8500"
-    volumes:
-      - type: bind
-        source: .\www
-        target: /var/www
-        read_only: true
     environment:
       - TZ=America/Los_Angeles
     networks:
-      demo:
-  cf2:
-    image: cfdemo3
-    ports:
-      - "8502:8500"
-    volumes:
-      - type: bind
-        source: .\www
-        target: /var/www
-        read_only: true
-    environment:
-      - TZ=America/Los_Angeles
-    networks:
-      demo:
-  cf3:
-    image: cfdemo3
-    ports:
-      - "8503:8500"
-    volumes:
-      - type: bind
-        source: .\www
-        target: /var/www
-        read_only: true
-    environment:
-      - TZ=America/Los_Angeles
-    networks:
-      demo:
-  cf4:
-    image: cfdemo3
-    ports:
-      - "8504:8500"
-    volumes:
-      - type: bind
-        source: .\www
-        target: /var/www
-        read_only: true
-    environment:
-      - TZ=America/Los_Angeles
-    networks:
-      demo:
-  cf5:
-    image: cfdemo3
-    ports:
-      - "8505:8500"
-    volumes:
-      - type: bind
-        source: .\www
-        target: /var/www
-        read_only: true
-    environment:
-      - TZ=America/Los_Angeles
-    networks:
-      demo:
+      - demo
 
   nginx:
     image: nginx:latest
     restart: always
     depends_on:
-      - "cf1"
-      - "cf2"
-      - "cf3"
-      - "cf4"
-      - "cf5"
-    ports:
-      - "80:80"
+      - "cf"
     networks:
       - demo
+    ports:
+      - "80:80"
     environment:
       - TZ=America/Los_Angeles
     volumes:
       - type: bind
         source: .\nginx\nginx.conf
         target: /etc/nginx/nginx.conf
-        read_only: true       
+        read_only: true
 
   redis:
     image: redis:latest
-    ports:
-      - "6379:6379"
     networks:
       - demo
     environment:
       - TZ=America/Los_Angeles
-
