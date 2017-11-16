@@ -22,7 +22,7 @@ A **minimal** example of building a CF Docker image.
 
 REQUIREMENTS
 
-- The build requires the Linux x64 ColdFusion installer `ColdFusion_2016_WWEJ_linux64.bin` file to be in the `demo1` folder.
+- The build requires the Linux x64 ColdFusion installer `ColdFusion_2016_WWEJ_linux64.bin` file to be in the `cfdemo1` folder.
 
 TO BUILD
 
