@@ -11,6 +11,8 @@ services:
       - TZ=America/Los_Angeles
     networks:
       - demo
+    environment:
+      - myapp_env=dev
 
   nginx:
     image: nginx:latest
